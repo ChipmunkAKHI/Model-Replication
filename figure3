@@ -1,0 +1,53 @@
+function main
+    % Parameters
+    a = 0.4; b = 1; c = 0.1; d = 0.1; e = 0.2; f = 0.2; 
+    l = 0.15; m = 1.5; n = 1.4; alpha = 0.8; delta = 0.4;
+
+    % Initial conditions
+    y0 = [0.5; 0.6; 0.5; 0.2];
+
+    % Time span
+    tspan = [0 50];
+
+    % ODE solver
+    [t, Y] = ode45(@(t, y) system_odes(t, y, a, b, c, d, e, f, l, m, n, alpha, delta), tspan, y0);
+
+    % Plot s(t)
+    figure;
+    plot(t, Y(:, 1), 'b-', 'LineWidth', 2);
+    xlabel('Time');
+    
+    
+    hold on
+    %Plot i(t)
+    plot(t, Y(:, 2), 'g-', 'LineWidth', 2);
+    xlabel('Time');
+   
+   %Plot x(t)
+    plot(t, Y(:, 3), 'r-', 'LineWidth', 2);
+    xlabel('Time');
+
+    %Plot y(t)
+    plot(t, Y(:, 4), 'k-', 'LineWidth', 2);
+    xlabel('Time');
+
+    legend("s(t)","i(t)","x(t)","y(t)")
+   hold off
+    
+
+    grid on;
+end
+
+function dy = system_odes(t, y, a, b, c, d, e, f, l, m, n, alpha, delta)
+    s = y(1);
+    i = y(2);
+    x = y(3);
+    y_val = y(4);
+    
+    ds_dt = s*(1 - s - i) - a*s*i - b*s*x;
+    di_dt = a*s*i - d*i - f*x*i - m*i*y_val;
+    dx_dt = c*s*x + l*i*x - e*x*y_val - delta*x;
+    dy_dt = e*x*y_val - alpha*y_val + n*i*y_val;
+    
+    dy = [ds_dt; di_dt; dx_dt; dy_dt];
+end
